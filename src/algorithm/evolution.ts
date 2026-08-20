@@ -51,7 +51,7 @@ const generationStep = (original:Drawing, population:Array<Drawing>, mutation:nu
         {
             const parentA = population[Math.floor(Math.random() * survivors)]!;
             const parentB = population[Math.floor(Math.random() * survivors)]!;
-            const child = Drawing.Crosover(parentA, parentB);
+            const child = Drawing.Crossover(parentA, parentB);
             newGeneration.push(child);
         }
     }

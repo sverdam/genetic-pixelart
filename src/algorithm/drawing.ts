@@ -29,7 +29,7 @@ export default class Drawing{
     return distance;
   }
 
-  public static Crosover(a: Drawing, b:Drawing):Drawing{
+  public static Crossover(a: Drawing, b:Drawing):Drawing{
 
     function getBit(num: number, position: number): boolean {
       return (num & (1 << position)) !== 0;
