@@ -29,6 +29,33 @@ export default class Drawing{
     return distance;
   }
 
+  public static Crosover(a: Drawing, b:Drawing):Drawing{
+
+    function getBit(num: number, position: number): boolean {
+      return (num & (1 << position)) !== 0;
+    }
+    function setBit(num: number, position: number): number {
+      return num | (1 << position);
+    }
+
+    const newDrawing = new Drawing(a.rows, a.cols);
+    for (let r = 0; r < a.rows; r++){
+      for (let c = 0; c < a.cols; c++){
+        let value = 0x000000;
+        const hexA = a.get(r, c);
+        const hexB = b.get(r, c);
+
+        for (let i = 0; i < 24; i++)
+        {
+          const newBit = Math.random() < 0.5 ? getBit(hexA, i) : getBit(hexB, i);
+          value = setBit(newBit ? 1 : 0, i);
+        }
+        newDrawing.set(r, c, value);
+      }
+    }
+    return newDrawing;
+  }
+
   public Reproduce(mutation: number): Drawing {
     
     function toggleBit(num: number, position: number): number {
