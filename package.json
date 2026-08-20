@@ -2,13 +2,14 @@
   "name": "geneticalgorithm",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "test"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "node.js": "^0.0.1-security",
     "nodemon": "^3.1.14"
   }
 }
