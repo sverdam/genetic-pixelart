@@ -82,7 +82,7 @@ export default class Drawing{
             if (Math.random() > mutation) continue;
             val = toggleBit(val, i);
         }
-        newDrawing.set(rowIndex, colIndex, value);
+        newDrawing.set(rowIndex, colIndex, val);
       });
     });
 
