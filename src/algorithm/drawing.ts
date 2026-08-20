@@ -1,12 +1,12 @@
 
-
-
-class Drawing{
+export default class Drawing{
   private pixels: number[][];
+  private score: number;
   public readonly rows: number;
   public readonly cols: number;  
   
   constructor(rows: number, cols: number){
+    this.score = -1;
     this.rows = rows;
     this.cols = cols;
 
@@ -16,7 +16,7 @@ class Drawing{
     );
   }
 
-  public Distance(original: Drawing):number {
+  public CalculateScore(original: Drawing):number {
     let distance = 0;
 
     this.pixels.forEach((row, rowIndex) => {
@@ -25,6 +25,7 @@ class Drawing{
       });
     });
 
+    this.score = distance;
     return distance;
   }
 
@@ -76,6 +77,8 @@ class Drawing{
   private isValidCoordinate(row: number, col: number): boolean {
     return row >= 0 && row < this.rows && col >= 0 && col < this.cols;
   }
+
+  public getScore():number{return this.score; }
 }
 
 
