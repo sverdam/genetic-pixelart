@@ -17,11 +17,21 @@ export default class Drawing{
   }
 
   public CalculateScore(original: Drawing):number {
+    
+    function getBit(num: number, position: number): boolean {
+      return (num & (1 << position)) !== 0;
+    }
+
     let distance = 0;
 
     this.pixels.forEach((row, rowIndex) => {
       row.forEach((value, colIndex) => {
-        distance += Math.abs(value - original.get(rowIndex, colIndex));
+        //distance += Math.abs(value - original.get(rowIndex, colIndex));
+        const og = original.get(rowIndex, colIndex);
+        for (let i = 0; i < 24; i++){
+          if (getBit(value, i) == getBit(og, i)) continue;
+          distance++;
+        }
       });
     });
 
