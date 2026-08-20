@@ -1,6 +1,22 @@
 
 import Drawing from './drawing.js';
 
+const displayPopulation = (original: Drawing, population:Array<Drawing>, currentGeneration: number) =>
+{
+    // Calculate scores
+    population.forEach(drawing => {
+        drawing.CalculateScore(original);
+    })
+
+    // Sort
+    population.sort((a, b) => a.getScore() - b.getScore())
+
+    const amount = population.length
+    const middleText = amount > 2 ? ` Middle: ${population[Math.floor(amount * 0.5)]!.getScore()}` : ``;
+    const rankings = `Best: ${population[0]!.getScore()}.${middleText} Worst: ${population[amount - 1]!.getScore()}`;
+    console.log(`Generation ${currentGeneration + 1}. ${rankings}. Size ${amount}`);
+}
+
 const generateRandomPopulation = (rows: number, cols: number, population: number): Array<Drawing> => 
 {
     const result: Array<Drawing> = [];
@@ -22,7 +38,7 @@ const generationStep = (original:Drawing, population:Array<Drawing>, mutation:nu
     })
 
     // Sort
-    population.sort((a, b) => b.getScore() - a.getScore())
+    population.sort((a, b) => a.getScore() - b.getScore())
 
     // New Population
     const newGeneration: Array<Drawing> = [];
@@ -33,7 +49,9 @@ const generationStep = (original:Drawing, population:Array<Drawing>, mutation:nu
             newGeneration.push(population[i]!.Reproduce(mutation));   
         }else
         {
-            const child = population[i % survivors]!.Reproduce(mutation);
+            const parentA = population[Math.floor(Math.random() * survivors)]!;
+            const parentB = population[Math.floor(Math.random() * survivors)]!;
+            const child = Drawing.Crosover(parentA, parentB);
             newGeneration.push(child);
         }
     }
@@ -46,10 +64,17 @@ export const geneticAlgorithm = (original:Drawing, n:number, mutation:number, su
     
     for (let i = 0; i < generationAmount; i++){
         population = generationStep(original, population, mutation, survivePercent);
+        if (i % 20 != 19) continue;
+        displayPopulation(original, population, i);
     }
+    
+    // Calculate scores
+    population.forEach(drawing => {
+        drawing.CalculateScore(original);
+    })
 
     // Sort
-    population.sort((a, b) => b.getScore() - a.getScore())
+    population.sort((a, b) => a.getScore() - b.getScore())
 };
 
 export const main = () => {
