@@ -1,10 +1,13 @@
 {
   "name": "geneticalgorithm",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "author": "",
   "license": "ISC",
