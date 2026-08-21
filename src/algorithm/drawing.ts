@@ -11,6 +11,7 @@ export default class Drawing{
     this.cols = cols;
 
     let randomColor = Math.round(Math.random() * 0xffffff);
+    //let randomColor = 0x888888;
     this.pixels = Array.from({ length: rows }, () =>
       Array(cols).fill(randomColor)
     );
@@ -30,7 +31,7 @@ export default class Drawing{
         const og = original.get(rowIndex, colIndex);
         for (let i = 0; i < 24; i++){
           if (getBit(value, i) == getBit(og, i)) continue;
-          distance++;
+          distance += 1 + (i % 8);
         }
       });
     });
