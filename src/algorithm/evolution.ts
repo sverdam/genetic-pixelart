@@ -92,7 +92,7 @@ export const geneticAlgorithm = (original:Drawing, n:number, mutation:number, ge
 };
 
 export const main = () => {
-    const drawing = new Drawing(3, 5);
+    const drawing = new Drawing(4, 5);
     drawing.set(0, 0, 0x0602a0);
     drawing.set(1, 0, 0x8830b0);
     drawing.set(2, 0, 0xff0100);
@@ -109,6 +109,12 @@ export const main = () => {
     drawing.set(1, 4, 0x83ff3f);
     drawing.set(2, 4, 0x88f5ff);
 
-    geneticAlgorithm(drawing, 2500, 0.001, 1000, 0.2, 0.4);
+    drawing.set(3, 0, 0xaf03f2);
+    drawing.set(3, 1, 0x0c3452);
+    drawing.set(3, 2, 0x3d7212);
+    drawing.set(3, 3, 0x6e2022);
+    drawing.set(3, 3, 0x3a4f32);
+
+    geneticAlgorithm(drawing, 2500, 0.001, 1000, 0.4, 0.4);
 };
 
