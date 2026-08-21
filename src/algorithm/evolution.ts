@@ -13,8 +13,8 @@ const displayPopulation = (original: Drawing, population:Array<Drawing>, current
 
     const amount = population.length
     const middleText = amount > 2 ? ` \tM: ${population[Math.floor(amount * 0.5)]!.getScore()}` : ``;
-    const rankings = `\tB: ${population[0]!.getScore()}${middleText} \tD: ${population[amount - 1]!.getScore()}`;
-    console.log(`Generation ${currentGeneration + 1}.   ${rankings}`);
+    const rankings = `\tB: ${population[0]!.getScore()}${middleText} \tW: ${population[amount - 1]!.getScore()}`;
+    console.log(`Generation ${currentGeneration + 1}.   ${rankings}    \t\tsize: ${amount}`);
 }
 
 const generateRandomPopulation = (rows: number, cols: number, population: number): Array<Drawing> => 
@@ -28,7 +28,7 @@ const generateRandomPopulation = (rows: number, cols: number, population: number
     return result;
 }
 
-const generationStep = (original:Drawing, population:Array<Drawing>, mutation:number, survivePercent:number):Array<Drawing> => {
+const generationStep = (original:Drawing, population:Array<Drawing>, mutation:number, reproducePercent:number, crossoverPercent:number):Array<Drawing> => {
 
     const n = population.length;
 
@@ -40,33 +40,21 @@ const generationStep = (original:Drawing, population:Array<Drawing>, mutation:nu
     // Sort
     population.sort((a, b) => a.getScore() - b.getScore())
 
-    // New Population
-    const newGeneration: Array<Drawing> = [];
-    const survivors = Math.floor(survivePercent * n); // 0.5 -> survivePercent
-    for (let i = 0; i < n; i++)
+    // Reproduction & Crossover
+    const reproducingPopulation = Math.floor(reproducePercent * n);
+    const crossoverPopulation = Math.floor(crossoverPercent * n);
+    
+    for (let i = 0; i < reproducingPopulation; i++)
     {
-        if (i < survivors){
-            newGeneration.push(population[i]!.Reproduce(0));   
-        }else
-        {
-            const parentA = population[Math.floor(0.5 * (i % survivors))]!;
-            const parentB = population[i % survivors]!;
-            const child = Drawing.Crossover(parentA, parentB);
-            newGeneration.push(child.Reproduce(mutation));
-        }
+        population.push(population[i]!.Reproduce(mutation));
     }
 
-    return newGeneration;
-}
-
-export const geneticAlgorithm = (original:Drawing, n:number, mutation:number, survivePercent:number, generationAmount: number) => {
-    let population = generateRandomPopulation(original.rows, original.cols, n);
-    
-    for (let i = 0; i < generationAmount; i++){
-        if (i % 500 == 499 || (i < 1000 && i % 100 == 99)) displayPopulation(original, population, i);
-        population = generationStep(original, population, mutation, survivePercent);
+    for (let i = 0; i < crossoverPopulation; i++){
+        const otherParent = population[Math.floor(Math.random() * n)]!;
+        const child = Drawing.Crossover(population[i]!, otherParent);
+        population.push(child.Reproduce(mutation));
     }
-    
+
     // Calculate scores
     population.forEach(drawing => {
         drawing.CalculateScore(original);
@@ -74,6 +62,33 @@ export const geneticAlgorithm = (original:Drawing, n:number, mutation:number, su
 
     // Sort
     population.sort((a, b) => a.getScore() - b.getScore())
+
+    // New Population
+    const newGeneration: Array<Drawing> = [];
+    for (let i = 0; i < n; i++){
+        newGeneration.push(population[i]!.Reproduce(0));
+    }
+
+    return newGeneration;
+}
+
+export const geneticAlgorithm = (original:Drawing, n:number, mutation:number, generationAmount: number, reproducePercent:number, crossoverPercent:number) => {
+    let population = generateRandomPopulation(original.rows, original.cols, n);
+    
+    let lastGen = 0;
+
+    for (let i = 0; i < generationAmount; i++){
+        if (i % 50 == 49) displayPopulation(original, population, i);
+        population = generationStep(original, population, mutation, reproducePercent, crossoverPercent);
+        lastGen = i;
+
+        // Stop if we reach a "Perfect" solution before the generation stop.
+        if (population[0]!.CalculateScore(original) == 0) {
+            break;
+        }
+    }
+    
+    displayPopulation(original, population, lastGen);
 };
 
 export const main = () => {
@@ -94,6 +109,6 @@ export const main = () => {
     drawing.set(1, 4, 0x83ff3f);
     drawing.set(2, 4, 0x88f5ff);
 
-    geneticAlgorithm(drawing, 2500, 0.001, 0.33, 50000);
+    geneticAlgorithm(drawing, 2500, 0.001, 1000, 0.2, 0.4);
 };
 
