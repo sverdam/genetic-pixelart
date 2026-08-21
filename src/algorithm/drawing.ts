@@ -18,7 +18,7 @@ export default class Drawing{
   }
 
   public CalculateScore(original: Drawing):number {
-    
+    if (this.score >= 0) return this.score;
     function getBit(num: number, position: number): boolean {
       return (num & (1 << position)) !== 0;
     }
