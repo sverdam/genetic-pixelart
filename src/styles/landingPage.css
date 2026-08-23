@@ -1,4 +1,6 @@
-.hero {}
+.hero {
+    background: linear-gradient(0deg, #f0f0f0, #cbd3fa);
+}
 
 .hero h1 {
     text-align: center;
