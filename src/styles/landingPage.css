@@ -1,0 +1,13 @@
+.hero {}
+
+.hero h1 {
+    text-align: center;
+  font-size: 110px;
+  font-family: "Tiny5", sans-serif;
+  margin: 0;
+  line-height: 0.9;
+}
+
+.hero p {
+  font-size: 20px;
+}

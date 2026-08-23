@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Tiny5&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  background: #f0f0f0;
+  color: #1D201F;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.btn {
+  background-color: #6c82ef;
+  border-radius: 16px;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #8094f7;
+}
+
+
+section {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 60px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  background-color: #cecece;
+  border-radius: 20px;
+  padding: 20px;
+  min-width: 340px;
+  max-width: 400px;
+  height: 500px;
+  text-align: center;
+}
+
+.drawing {
+    width: 100%;
+    height: 100%;
+    background-color: #6a6a6a;
+}
+
+.canvas{
+    width: 100%;
+    height: 100%;
+    background-color: #6a6a6a;
+}
