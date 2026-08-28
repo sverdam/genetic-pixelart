@@ -1,28 +1,32 @@
 import "../styles/landingPage.css";
+import squirrel from "../assets/squirrel.png";
+import paintbrush from "../assets/paintbrush.png";
 
 function LandingPage() {
   return <div>
     <section className="hero">
-        <h1>genetic<br />pixel art</h1>
+        <h1>genetic pixel art</h1>
         <p>an application of genetic algorithms for pixel art recreation</p>
-        <button className="btn">try it out!</button>
-    </section>
-    <section>
         <div className="card-container">
             <div className="card">
-                <div className="drawing"></div>
-                <p>Drawing 1</p>
-                <a href="/example" className="btn">view example</a>
+                <div>
+                    <img src={squirrel} alt="squirrel" className="fadeHover" />
+                </div>
+                <div className="card-content">
+                    <h3>Example Drawing</h3>
+                    <p>See how the genetic algorithm recreates pixel art!</p>
+                    <a href="/example" className="btn">view example</a>
+                </div>
             </div>
             <div className="card">
-                <div className="drawing"></div>
-                <p>Drawing 2</p>
-                <a href="/example" className="btn">view example</a>
-            </div>
-            <div className="card">
-                <div className="drawing"></div>
-                <p>Drawing ?</p>
-                <a href="/draw" className="btn">submit your drawing</a>
+                <div>
+                    <img src={paintbrush} alt="make your own drawing" className="fadeHover" />
+                </div>
+                <div className="card-content">
+                    <h3>Make Your Own</h3>
+                    <p>Draw your own image and let the genetic algorithm recreate it!</p>
+                    <a href="/draw" className="btn">make your own!</a>
+                </div>
             </div>
         </div>
     </section>

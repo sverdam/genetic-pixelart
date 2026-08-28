@@ -4,6 +4,18 @@
   box-sizing: border-box;
 }
 
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+}
+
+.lg {
+  font-size: 4rem;
+}
+
+.md {
+  font-size: 2rem;
+}
+
 body {
   margin: 0;
   font-family: 'DM Sans', sans-serif;
@@ -38,7 +50,6 @@ body {
 
 section {
   width: 100vw;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -49,14 +60,12 @@ section {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  padding: 60px;
 }
 
 .card {
   display: flex;
   flex-direction: column;
   justify-content: end;
-  background-color: #cecece;
   border-radius: 20px;
   padding: 20px;
   min-width: 340px;
@@ -75,4 +84,60 @@ section {
     width: 100%;
     height: 100%;
     background-color: #6a6a6a;
+}
+
+.tiny5{
+  font-family: "Tiny5", sans-serif;
+}
+
+
+.fadeHover {
+  filter: grayscale(100%);
+  transition: all 0.3s ease;
+}
+
+.fadeHover:hover {
+  filter: grayscale(0%);
+}
+
+
+.col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap:20px
+}
+
+.displayGrid {
+  margin:0;
+  padding:0;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 20px;
+}
+
+.displayItemTall {
+  grid-row: span 2;
+}
+
+.generationDisplay {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+}
+
+.pageGrid {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 20px;
 }
