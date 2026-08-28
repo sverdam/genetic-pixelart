@@ -8,12 +8,20 @@ h1, h2, h3, h4, h5, h6, p {
   margin: 0;
 }
 
+.xl {
+  font-size: 6rem;
+}
+
 .lg {
   font-size: 4rem;
 }
 
 .md {
   font-size: 2rem;
+}
+
+.sm {
+  font-size: 1rem;
 }
 
 body {
