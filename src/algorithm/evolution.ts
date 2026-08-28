@@ -1,120 +1,303 @@
+import Drawing from "./drawing.js";
 
-import Drawing from './drawing.js';
+export type GenerationCallback = (
+    generation: number,
+    best: Drawing,
+    median: Drawing,
+    worst: Drawing
+) => void;
 
-const displayPopulation = (original: Drawing, population:Array<Drawing>, currentGeneration: number) =>
-{
-    // Calculate scores
-    population.forEach(drawing => {
+
+const generateRandomPopulation = (
+    rows: number,
+    cols: number,
+    populationSize: number
+): Drawing[] => {
+
+    const population: Drawing[] = [];
+
+    for (let i = 0; i < populationSize; i++) {
+        population.push(
+            new Drawing(rows, cols)
+        );
+    }
+
+    return population;
+};
+
+
+const generationStep = (
+    original: Drawing,
+    population: Drawing[],
+    mutation: number,
+    reproducePercent: number,
+    crossoverPercent: number
+): Drawing[] => {
+
+    const populationSize =
+        population.length;
+
+    for (const drawing of population) {
         drawing.CalculateScore(original);
-    })
-
-    // Sort
-    population.sort((a, b) => a.getScore() - b.getScore())
-
-    const amount = population.length
-    const middleText = amount > 2 ? ` \tM: ${population[Math.floor(amount * 0.5)]!.getScore()}` : ``;
-    const rankings = `\tB: ${population[0]!.getScore()}${middleText} \tW: ${population[amount - 1]!.getScore()}`;
-    console.log(`Generation ${currentGeneration + 1}.   ${rankings}    \t\tsize: ${amount}`);
-}
-
-const generateRandomPopulation = (rows: number, cols: number, population: number): Array<Drawing> => 
-{
-    const result: Array<Drawing> = [];
-
-    for (let i = 0; i < population; i++){
-        result.push(new Drawing(rows, cols));
     }
 
-    return result;
-}
+    population.sort(
+        (a, b) =>
+            a.getScore() - b.getScore()
+    );
 
-const generationStep = (original:Drawing, population:Array<Drawing>, mutation:number, reproducePercent:number, crossoverPercent:number):Array<Drawing> => {
+    const reproduceCount =
+        Math.floor(
+            reproducePercent * populationSize
+        );
 
-    const n = population.length;
+    const crossoverCount =
+        Math.floor(
+            crossoverPercent * populationSize
+        );
 
-    // Calculate scores
-    population.forEach(drawing => {
-        drawing.CalculateScore(original);
-    })
 
-    // Sort
-    population.sort((a, b) => a.getScore() - b.getScore())
+    for (let i = 0; i < reproduceCount; i++) {
 
-    // Reproduction & Crossover
-    const reproducingPopulation = Math.floor(reproducePercent * n);
-    const crossoverPopulation = Math.floor(crossoverPercent * n);
-    
-    for (let i = 0; i < reproducingPopulation; i++)
-    {
-        population.push(population[i]!.Reproduce(mutation));
+        population.push(
+            population[i]!.Reproduce(
+                mutation
+            )
+        );
     }
 
-    for (let i = 0; i < crossoverPopulation; i++){
-        const otherParent = population[Math.floor(Math.random() * n)]!;
-        const child = Drawing.Crossover(population[i]!, otherParent);
-        population.push(child.Reproduce(mutation));
+
+    for (let i = 0; i < crossoverCount; i++) {
+
+        const parentA =
+            population[i]!;
+
+        const parentB =
+            population[
+                Math.floor(
+                    Math.random() * populationSize
+                )
+            ]!;
+
+        const child =
+            Drawing.Crossover(
+                parentA,
+                parentB
+            );
+
+        population.push(
+            child.Reproduce(mutation)
+        );
     }
 
-    // Calculate scores
-    population.forEach(drawing => {
-        drawing.CalculateScore(original);
-    })
-
-    // Sort
-    population.sort((a, b) => a.getScore() - b.getScore())
-
-    // New Population
-    const newGeneration: Array<Drawing> = [];
-    for (let i = 0; i < n; i++){
-        newGeneration.push(population[i]!.Reproduce(0));
+    for (
+        let i = populationSize;
+        i < population.length;
+        i++
+    ) {
+        population[i]!.CalculateScore(
+            original
+        );
     }
 
-    return newGeneration;
-}
+    population.sort(
+        (a, b) =>
+            a.getScore() - b.getScore()
+    );
 
-export const geneticAlgorithm = (original:Drawing, n:number, mutation:number, generationAmount: number, reproducePercent:number, crossoverPercent:number) => {
-    let population = generateRandomPopulation(original.rows, original.cols, n);
-    
-    let lastGen = 0;
 
-    for (let i = 0; i < generationAmount; i++){
-        if (i % 50 == 49) displayPopulation(original, population, i);
-        population = generationStep(original, population, mutation, reproducePercent, crossoverPercent);
-        lastGen = i;
+    const nextGeneration: Drawing[] = [];
 
-        // Stop if we reach a "Perfect" solution before the generation stop.
-        if (population[0]!.CalculateScore(original) == 0) {
+    for (
+        let i = 0;
+        i < populationSize;
+        i++
+    ) {
+        nextGeneration.push(
+            population[i]!.Reproduce(0)
+        );
+    }
+
+    return nextGeneration;
+};
+
+
+export const geneticAlgorithm = async (
+    original: Drawing,
+    n: number,
+    mutation: number,
+    generationAmount: number,
+    reproducePercent: number,
+    crossoverPercent: number,
+    onGeneration?: GenerationCallback
+): Promise<Drawing> => {
+
+    console.log(
+        "🧬 Starting genetic algorithm..."
+    );
+
+    console.log(
+        `Population: ${n}`
+    );
+
+    console.log(
+        `Generations: ${generationAmount}`
+    );
+
+    console.log(
+        `Mutation: ${mutation}`
+    );
+
+    console.log(
+        `Reproduction: ${reproducePercent}`
+    );
+
+    console.log(
+        `Crossover: ${crossoverPercent}`
+    );
+
+
+    /*
+     * ========================================
+     * INITIAL POPULATION
+     * ========================================
+     */
+
+    let population =
+        generateRandomPopulation(
+            original.rows,
+            original.cols,
+            n
+        );
+
+
+    /*
+     * ========================================
+     * GENERATIONS
+     * ========================================
+     */
+
+    for (
+        let generation = 0;
+        generation < generationAmount;
+        generation++
+    ) {
+
+        population =
+            generationStep(
+                original,
+                population,
+                mutation,
+                reproducePercent,
+                crossoverPercent
+            );
+
+
+        /*
+         * generationStep() already scores and
+         * sorts the population.
+         */
+        const best =
+            population[0]!;
+
+        const median =
+            population[
+                Math.floor(
+                    population.length / 2
+                )
+            ]!;
+
+        const worst =
+            population[
+                population.length - 1
+            ]!;
+
+
+        /*
+         * ====================================
+         * REPORT TO REACT
+         * ====================================
+         */
+
+        onGeneration?.(
+            generation + 1,
+            best,
+            median,
+            worst
+        );
+
+
+        /*
+         * Console output.
+         */
+        console.log(
+            `Generation ${generation + 1}: ` +
+            `Best=${best.getScore()} ` +
+            `Median=${median.getScore()} ` +
+            `Worst=${worst.getScore()}`
+        );
+
+
+        /*
+         * ====================================
+         * PERFECT SOLUTION
+         * ====================================
+         */
+
+        if (
+            best.getScore() === 0
+        ) {
+            console.log(
+                `🎯 Perfect solution found at generation ${
+                    generation + 1
+                }!`
+            );
+
             break;
         }
+
+
+        /*
+         * ====================================
+         * LET THE BROWSER RENDER
+         * ====================================
+         *
+         * This yields to the browser once per
+         * generation so React can update the
+         * visualizations.
+         *
+         * setTimeout(0) is intentionally tiny.
+         */
+        await new Promise<void>(
+            resolve =>
+                setTimeout(resolve, 0)
+        );
     }
-    
-    displayPopulation(original, population, lastGen);
+
+
+    /*
+     * ========================================
+     * FINAL RESULT
+     * ========================================
+     */
+
+    population.sort(
+        (a, b) =>
+            a.getScore() - b.getScore()
+    );
+
+    const finalBest =
+        population[0]!;
+
+
+    console.log(
+        "🏆 Genetic algorithm finished!"
+    );
+
+    console.log(
+        `Final best score: ${finalBest.getScore()}`
+    );
+
+
+    return finalBest;
 };
-
-export const main = () => {
-    const drawing = new Drawing(4, 5);
-    drawing.set(0, 0, 0x0602a0);
-    drawing.set(1, 0, 0x8830b0);
-    drawing.set(2, 0, 0xff0100);
-    drawing.set(0, 1, 0x008800);
-    drawing.set(1, 1, 0x285800);
-    drawing.set(2, 1, 0xff8800);
-    drawing.set(0, 2, 0x67ff00);
-    drawing.set(1, 2, 0x88ff00);
-    drawing.set(2, 2, 0x834f00);
-    drawing.set(0, 3, 0x00ff55);
-    drawing.set(1, 3, 0x88ff55);
-    drawing.set(2, 3, 0x88f755);
-    drawing.set(0, 4, 0x70f1ff);
-    drawing.set(1, 4, 0x83ff3f);
-    drawing.set(2, 4, 0x88f5ff);
-
-    drawing.set(3, 0, 0xaf03f2);
-    drawing.set(3, 1, 0x0c3452);
-    drawing.set(3, 2, 0x3d7212);
-    drawing.set(3, 3, 0x6e2022);
-    drawing.set(3, 3, 0x3a4f32);
-
-    geneticAlgorithm(drawing, 2500, 0.001, 1000, 0.4, 0.4);
-};
-
